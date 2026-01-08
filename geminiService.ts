@@ -166,14 +166,16 @@ QUY TẮC HÀNH CHÍNH:
 
 export const generateLessonPlan = async (inputs: FormInputs): Promise<GenerationResult> => {
   try {
+    // Fix: Create GoogleGenAI instance right before making an API call to ensure it uses the most up-to-date API key.
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     
     const prompt = `Soạn giáo án chi tiết bài "${inputs.ten_bai_day}" lớp ${inputs.khoi_lop}, thời lượng ${inputs.so_tiet} tiết. 
     Yêu cầu ghi chú: ${inputs.ghi_chu || "Không có"}. 
     Lưu ý: Mã NLS phải đúng định dạng TC${inputs.khoi_lop && inputs.khoi_lop <= 7 ? '1' : '2'} và trình bày LaTeX đẹp.`;
 
+    // Fix: Use 'gemini-3-pro-preview' for complex reasoning/STEM tasks as per guidelines
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-3-pro-preview",
       contents: prompt,
       config: {
         systemInstruction: SYSTEM_INSTRUCTION,

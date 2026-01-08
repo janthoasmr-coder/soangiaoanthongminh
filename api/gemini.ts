@@ -175,7 +175,8 @@ export default async function handler(req: any, res: any) {
   }
 
   try {
-    const apiKey = process.env.API_KEY || process.env.GEMINI_API_KEY;
+    // Fix: Use process.env.API_KEY exclusively as per guidelines
+    const apiKey = process.env.API_KEY;
     
     if (!apiKey) {
       return res.status(500).json({ error: 'Hệ thống chưa cấu hình API Key trên Server.' });
@@ -187,8 +188,9 @@ export default async function handler(req: any, res: any) {
     Yêu cầu ghi chú: ${inputs.ghi_chu || "Không có"}. 
     Lưu ý: Mã NLS phải đúng định dạng TC${inputs.khoi_lop <= 7 ? '1' : '2'} và trình bày LaTeX đẹp.`;
 
+    // Fix: Upgrade to 'gemini-3-pro-preview' for complex text tasks
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-3-pro-preview",
       contents: prompt,
       config: {
         systemInstruction: SYSTEM_INSTRUCTION,
